@@ -1,0 +1,26 @@
+opencollection: 1.0.0
+
+info:
+  name: EWord-API
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU4OWYxY2ExLWI1ODItNDMwNy1hNzA5LTE0MmVhZjM1Nzk3NCIsImVtYWlsIjoiYWRtaW5AZXdvcmQuY29tIiwibmFtZSI6ImFkbWluQGV3b3JkLmNvbSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc3Nzc5MDQ0MCwiZXhwIjoxNzc4Mzk1MjQwLCJpYXQiOjE3Nzc3OTA0NDAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE5NCIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTE5NCJ9.KCS-PdQgDS_lARon8mbYMElYzdUs5H8NiCc4kFV1a4hRIMO52PHoI6PJECCWBb8T2co9RITzD9Wf96uEgiSXIQ
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

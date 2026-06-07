@@ -1,0 +1,7 @@
+.idea/
+bin/
+obj/
+.vs/
+*.user
+Statics/*
+!Statics/.gitkeep

@@ -1,0 +1,70 @@
+info:
+  name: 批量添加word
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:5194/word
+  body:
+    type: json
+    data: |-
+      [
+        {
+          "english": "event",
+          "chinese": "事件",
+          "options": ["事件", "聚会", "比赛", "节日"]
+        },
+        {
+          "english": "apple",
+          "chinese": "苹果",
+          "options": ["苹果", "橘子", "香蕉", "葡萄"]
+        },
+        {
+          "english": "teacher",
+          "chinese": "老师",
+          "options": ["医生", "工程师", "老师", "律师"]
+        },
+        {
+          "english": "run",
+          "chinese": "跑",
+          "options": ["走", "跳", "跑", "坐"]
+        },
+        {
+          "english": "happy",
+          "chinese": "快乐的",
+          "options": ["悲伤的", "快乐的", "兴奋的", "疲倦的"]
+        },
+        {
+          "english": "book",
+          "chinese": "书",
+          "options": ["笔记本", "书", "杂志", "报纸"]
+        },
+        {
+          "english": "big",
+          "chinese": "大",
+          "options": ["小", "大", "高", "矮"]
+        },
+        {
+          "english": "mother",
+          "chinese": "母亲",
+          "options": ["父亲", "母亲", "姐妹", "兄弟"]
+        },
+        {
+          "english": "blue",
+          "chinese": "蓝色",
+          "options": ["红色", "蓝色", "绿色", "黄色"]
+        },
+        {
+          "english": "eat",
+          "chinese": "吃",
+          "options": ["喝", "吃", "玩", "睡"]
+        }
+      ]
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,26 @@
+info:
+  name: 登录
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:5194/account/login
+  params:
+    - name: ""
+      value: ""
+      type: query
+  body:
+    type: json
+    data: |-
+      {
+        "email": "admin@eword.com",
+        "password": "Admin123."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
