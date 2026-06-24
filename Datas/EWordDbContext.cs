@@ -8,6 +8,7 @@ namespace E_Word_Api.Datas;
 public class EWordDbContext(DbContextOptions<EWordDbContext> options) : IdentityDbContext<AppUser, IdentityRole, string>(options)
 {
     public DbSet<Word> Words { get; set; }
+    public DbSet<CET6Book> Cet6Books { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
