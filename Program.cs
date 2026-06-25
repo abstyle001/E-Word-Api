@@ -50,6 +50,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<WordRepository>();
 builder.Services.AddScoped<CET6BookRepository>();
+builder.Services.AddScoped<ProgressRepository>();
 
 var app = builder.Build();
 
