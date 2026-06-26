@@ -35,7 +35,7 @@ public class ProgressRepository(EWordDbContext db)
         var progress = await db.Progresses.FirstOrDefaultAsync(p => p.UserId.Equals(UserId));
         if (progress == null)
         {
-            return 0;
+            throw new BizException("无此用户进度信息", statusCode: 500);
         }
         return progress.BookId;
     }

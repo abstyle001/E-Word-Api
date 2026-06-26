@@ -68,6 +68,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseMiddleware<ResponseWrapperMiddleware>();
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
