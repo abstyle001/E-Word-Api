@@ -29,4 +29,14 @@ public class ProgressRepository(EWordDbContext db)
         }
         await db.SaveChangesAsync();
     }
+
+    public async Task<long> GetProgress(string UserId)
+    {
+        var progress = await db.Progresses.FirstOrDefaultAsync(p => p.UserId.Equals(UserId));
+        if (progress == null)
+        {
+            return 0;
+        }
+        return progress.BookId;
+    }
 }

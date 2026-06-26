@@ -16,4 +16,12 @@ public class ProgressController(ProgressRepository progressRepository)
     {
         return progressRepository.UpdateProgress(progress.UserId, progress.BookId);
     }
+
+    [HttpGet]
+    [Route("{UserId}")]
+    [Authorize(Roles = RoleType.User)]
+    public Task<long> GetProgress([FromRoute] string UserId)
+    {
+        return progressRepository.GetProgress(UserId);
+    }
 }

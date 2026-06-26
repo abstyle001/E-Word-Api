@@ -47,6 +47,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<WordRepository>();
 builder.Services.AddScoped<CET6BookRepository>();
