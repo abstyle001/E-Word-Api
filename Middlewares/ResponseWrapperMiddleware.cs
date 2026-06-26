@@ -41,29 +41,6 @@ public class ResponseWrapperMiddleware
                              || contentType.Contains("+json", StringComparison.OrdinalIgnoreCase);
         if (isJsonResponse && !string.IsNullOrWhiteSpace(bodyText))
         {
-            // 优先尝试反序列化为 ApiResponse<object>
-            try
-            {
-                var maybeApi = JsonSerializer.Deserialize<ApiResponse<object>>(bodyText, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-
-                if (maybeApi != null)
-                {
-                    // 已经是统一格式，直接返回原始内容
-                    memStream.Position = 0;
-                    await memStream.CopyToAsync(originalBodyStream);
-                    context.Response.Body = originalBodyStream;
-                    return;
-                }
-            }
-            catch
-            {
-                // 忽略，继续尝试更宽松的 JSON 解析或当作普通值处理
-            }
-
-            // 再尝试解析为通用 JSON（可能是对象/数组/字符串/数字）
             try
             {
                 originalObj = JsonSerializer.Deserialize<object>(bodyText, new JsonSerializerOptions
@@ -85,7 +62,8 @@ public class ResponseWrapperMiddleware
         }
 
         // 如果已经是 ApiResponse 格式，则直接返回原始内容
-        if (originalObj is JsonElement je && je.ValueKind == JsonValueKind.Object && je.TryGetProperty("success", out _))
+        if (originalObj is JsonElement je && je.ValueKind == JsonValueKind.Object &&
+            je.TryGetProperty("success", out _))
         {
             memStream.Position = 0;
             await memStream.CopyToAsync(originalBodyStream);
