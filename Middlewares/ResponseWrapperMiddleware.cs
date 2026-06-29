@@ -14,6 +14,12 @@ public class ResponseWrapperMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
+        if (context.Request.Path.StartsWithSegments("/statics"))
+        {
+            await _next(context);
+            return;
+        }
+
         // 先替换响应流，捕获后续中间件/控制器写入的内容
         var originalBodyStream = context.Response.Body;
         await using var memStream = new MemoryStream();
