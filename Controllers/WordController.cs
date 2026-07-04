@@ -12,7 +12,8 @@ namespace E_Word_Api.Controllers;
 public class WordController(WordRepository wordRepository,
     CET6BookRepository cet6BookRepository,
     UserBookRepository userBookRepository,
-    UserSessionRepository userSessionRepository) : ControllerBase
+    UserSessionRepository userSessionRepository,
+    UserWordRepository userWordRepository) : ControllerBase
 {
     [HttpGet]
     // [Authorize(Roles = RoleType.User)]
@@ -72,6 +73,48 @@ public class WordController(WordRepository wordRepository,
         {
             throw new BizException("词书未启用");
         }
+    }
+
+    [HttpPost]
+    [Route("learn")]
+    public async Task LearnWord([FromQuery] string userId, [FromQuery] long bookId)
+    {
+        // 查询出用户所选词书
+        var userBook = await userBookRepository.FetchUserBook(userId);
+        if (userBook == null)
+        {
+            throw new BizException("用户未选择词书");
+        }
+
+        var userSession = await userSessionRepository.GetSession(userId, bookId);
+        if (userSession == null)
+        {
+            throw new BizException("该单词未缓存");
+        }
+        // 删除缓存的单词
+        await userSessionRepository.DeleteSession(userSession.Id);
+        
+        if (userBook.BookName.Equals("CET6"))
+        {
+            // 将单词添加到已背诵的单词中
+            var word = await cet6BookRepository.GetWord(bookId);
+            if (word != null)
+            {
+                var userWord = new UserWord
+                {
+                    UserId = userId,
+                    WordId = bookId,
+                    OriginBook = "CET6",
+                    Status = "learned"
+                };
+                await userWordRepository.AddUserWord(userWord);
+            }
+        }
+        else
+        {
+            throw new BizException("词书未启用");
+        }
+
     }
 
     /**

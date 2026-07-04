@@ -42,4 +42,8 @@ public class CET6BookRepository(EWordDbContext db)
         await db.Cet6Books
             .Where(b => ids.Contains(b.Id))
             .ToListAsync();
+
+    public async Task<CET6Book?> GetWord(long id) =>
+        await db.Cet6Books
+            .FindAsync(id);
 }

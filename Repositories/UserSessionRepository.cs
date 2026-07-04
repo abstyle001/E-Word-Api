@@ -29,4 +29,10 @@ public class UserSessionRepository(EWordDbContext db)
             await db.SaveChangesAsync();
         }
     }
+
+    // 查询缓存单词
+    public async Task<UserSession?> GetSession(string userId, long bookId) => 
+        db.UserSessions
+            .Where(us => us.UserId == userId && us.BookId == bookId)
+            .FirstOrDefault();
 }

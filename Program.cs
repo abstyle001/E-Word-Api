@@ -54,6 +54,7 @@ builder.Services.AddScoped<CET6BookRepository>();
 builder.Services.AddScoped<ProgressRepository>();
 builder.Services.AddScoped<UserBookRepository>();
 builder.Services.AddScoped<UserSessionRepository>();
+builder.Services.AddScoped<UserWordRepository>();
 
 var app = builder.Build();
 
