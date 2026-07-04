@@ -9,8 +9,15 @@ public class EWordDbContext(DbContextOptions<EWordDbContext> options) : Identity
 {
     public DbSet<Word> Words { get; set; }
     public DbSet<CET6Book> Cet6Books { get; set; }
-    
+
     public DbSet<Progress> Progresses { get; set; }
+
+    public DbSet<UserWord> UserWords { get; set; }
+
+    public DbSet<UserSession> UserSessions { get; set; }
+
+    public DbSet<UserBook> UserBooks { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

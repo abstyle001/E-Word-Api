@@ -52,6 +52,8 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<WordRepository>();
 builder.Services.AddScoped<CET6BookRepository>();
 builder.Services.AddScoped<ProgressRepository>();
+builder.Services.AddScoped<UserBookRepository>();
+builder.Services.AddScoped<UserSessionRepository>();
 
 var app = builder.Build();
 
