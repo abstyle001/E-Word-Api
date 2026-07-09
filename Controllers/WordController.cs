@@ -122,18 +122,33 @@ public class WordController(WordRepository wordRepository,
      */
     [HttpPost]
     [Route("switch-book")]
-    public async Task SwitchBook(string userId, string bookName)
+    public async Task SwitchBook([FromBody] UserBookDto userBookDto)
     {
-        var userBook = await userBookRepository.FetchUserBook(userId);
+        var userBook = await userBookRepository.FetchUserBook(userBookDto.UserId);
         if (userBook == null)
         {
-            userBook = new UserBook { UserId = userId, BookName = bookName };
+            userBook = new UserBook { UserId = userBookDto.UserId, BookName = userBookDto.BookName };
             await userBookRepository.AddUserBook(userBook);
         }
         else
         {
-            userBook.BookName = bookName;
+            userBook.BookName = userBookDto.BookName;
             userBookRepository.UpdateUserBook(userBook);
         }
+    }
+
+    /**
+     * 查看用户所选词书
+     */
+    [HttpGet]
+    [Route("check-book")]
+    public async Task<UserBook> CheckUserBook([FromQuery] string userId)
+    {
+        var userBook = await userBookRepository.FetchUserBook(userId);
+        if (userBook == null)
+        {
+            throw new BizException("未选择词书");
+        }
+        return userBook;
     }
 }
