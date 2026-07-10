@@ -77,16 +77,16 @@ public class WordController(WordRepository wordRepository,
 
     [HttpPost]
     [Route("learn")]
-    public async Task LearnWord([FromQuery] string userId, [FromQuery] long bookId)
+    public async Task LearnWord([FromBody] WordLearnDto wordLearnDto)
     {
         // 查询出用户所选词书
-        var userBook = await userBookRepository.FetchUserBook(userId);
+        var userBook = await userBookRepository.FetchUserBook(wordLearnDto.UserId);
         if (userBook == null)
         {
             throw new BizException("用户未选择词书");
         }
 
-        var userSession = await userSessionRepository.GetSession(userId, bookId);
+        var userSession = await userSessionRepository.GetSession(wordLearnDto.UserId, wordLearnDto.BookId);
         if (userSession == null)
         {
             throw new BizException("该单词未缓存");
@@ -97,13 +97,13 @@ public class WordController(WordRepository wordRepository,
         if (userBook.BookName.Equals("CET6"))
         {
             // 将单词添加到已背诵的单词中
-            var word = await cet6BookRepository.GetWord(bookId);
+            var word = await cet6BookRepository.GetWord(wordLearnDto.BookId);
             if (word != null)
             {
                 var userWord = new UserWord
                 {
-                    UserId = userId,
-                    WordId = bookId,
+                    UserId = wordLearnDto.UserId,
+                    WordId = wordLearnDto.BookId,
                     OriginBook = "CET6",
                     Status = "learned"
                 };
