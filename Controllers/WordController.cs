@@ -110,7 +110,10 @@ public class WordController(WordRepository wordRepository,
                     OriginBook = "CET6",
                     Status = "mastered",
                     Attempts = userSession.TotalAttempts,
-                    MasteredAt = DateTime.UtcNow
+                    MasteredAt = DateTime.UtcNow,
+                    RepetitionCount = 0,
+                    IntervalDays = 1,
+                    NextReviewAt = DateTime.UtcNow.AddDays(1)
                 };
                 await userWordRepository.AddUserWord(userWord);
 
@@ -131,6 +134,98 @@ public class WordController(WordRepository wordRepository,
             return new WordLearnResultDto { Mastered = false, CurrentStreak = 0 };
         }
     }
+
+    /// <summary>
+    /// 获取到期需要复习的旧词
+    /// </summary>
+    [HttpGet]
+    [Route("review")]
+    public async Task<List<QuizWordDto>> GetReviewWords([FromQuery] int number, [FromQuery] string userId)
+    {
+        var userWords = await userWordRepository.GetDueReviewWords(userId, number);
+        if (userWords == null || !userWords.Any())
+            return new List<QuizWordDto>();
+
+        var wordIds = userWords.Select(uw => uw.WordId).ToList();
+        var books = await cet6BookRepository.GetWordsByIds(wordIds);
+
+        // 保持与 DueReviewWords 相同的顺序（按 NextReviewAt ASC）
+        var bookDict = books.ToDictionary(b => b.Id);
+        var result = new List<QuizWordDto>();
+        foreach (var uw in userWords)
+        {
+            if (bookDict.TryGetValue(uw.WordId, out var book))
+            {
+                result.Add(new QuizWordDto
+                {
+                    Id = book.Id,
+                    Word = book.Word,
+                    Translate = book.Translate,
+                    DistractorWord1 = book.DistractorWord1,
+                    DistractorTranslate1 = book.DistractorTranslate1,
+                    DistractorWord2 = book.DistractorWord2,
+                    DistractorTranslate2 = book.DistractorTranslate2,
+                    DistractorWord3 = book.DistractorWord3,
+                    DistractorTranslate3 = book.DistractorTranslate3,
+                    IsReview = true
+                });
+            }
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 提交复习结果
+    /// </summary>
+    [HttpPost]
+    [Route("review")]
+    public async Task<WordReviewResultDto> ReviewWord([FromBody] WordReviewDto dto)
+    {
+        var userWord = await userWordRepository.GetByUserIdAndWordId(dto.UserId, dto.BookId)
+            ?? throw new BizException("该单词未在学习记录中");
+
+        userWord.LastReviewedAt = DateTime.UtcNow;
+
+        if (dto.IsCorrect)
+        {
+            userWord.RepetitionCount++;
+        }
+        else
+        {
+            userWord.RepetitionCount = Math.Max(0, userWord.RepetitionCount - 1);
+        }
+
+        userWord.IntervalDays = GetIntervalDays(userWord.RepetitionCount);
+        userWord.NextReviewAt = DateTime.UtcNow.AddDays(userWord.IntervalDays);
+
+        await userWordRepository.UpdateUserWord(userWord);
+
+        return new WordReviewResultDto
+        {
+            Correct = dto.IsCorrect,
+            RepetitionCount = userWord.RepetitionCount,
+            NextReviewAt = userWord.NextReviewAt.Value,
+            IntervalDays = userWord.IntervalDays
+        };
+    }
+
+    /// <summary>
+    /// 获取待复习词数量
+    /// </summary>
+    [HttpGet]
+    [Route("review/count")]
+    public async Task<int> GetReviewCount([FromQuery] string userId)
+        => await userWordRepository.CountDueReviews(userId);
+
+    private static int GetIntervalDays(int repetitionCount) => repetitionCount switch
+    {
+        0 => 1,
+        1 => 3,
+        2 => 7,
+        3 => 30,
+        4 => 90,
+        _ => 180
+    };
 
     /**
      * 切换词书
