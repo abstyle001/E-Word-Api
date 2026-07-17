@@ -6,7 +6,7 @@ namespace E_Word_Api.Repositories;
 
 public class UserWordRepository(EWordDbContext db)
 {
-    public async Task AddUserWord(UserWord userWord)
+    public virtual async Task AddUserWord(UserWord userWord)
     {
         await db.AddAsync(userWord);
         await db.SaveChangesAsync();

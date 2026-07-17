@@ -77,7 +77,7 @@ public class WordController(WordRepository wordRepository,
 
     [HttpPost]
     [Route("learn")]
-    public async Task LearnWord([FromBody] WordLearnDto wordLearnDto)
+    public async Task<WordLearnResultDto> LearnWord([FromBody] WordLearnDto wordLearnDto)
     {
         // 查询出用户所选词书
         var userBook = await userBookRepository.FetchUserBook(wordLearnDto.UserId);
@@ -91,30 +91,45 @@ public class WordController(WordRepository wordRepository,
         {
             throw new BizException("该单词未缓存");
         }
-        // 删除缓存的单词
-        await userSessionRepository.DeleteSession(userSession.Id);
-        
-        if (userBook.BookName.Equals("CET6"))
+
+        const int masteryThreshold = 3;
+        userSession.TotalAttempts++;
+
+        if (wordLearnDto.IsCorrect)
         {
-            // 将单词添加到已背诵的单词中
-            var word = await cet6BookRepository.GetWord(wordLearnDto.BookId);
-            if (word != null)
+            userSession.CorrectStreak++;
+            if (userSession.CorrectStreak >= masteryThreshold)
             {
+                // 连续正确达到阈值 → 掌握，从缓存移到已背词表
+                await userSessionRepository.DeleteSession(userSession.Id);
+
                 var userWord = new UserWord
                 {
                     UserId = wordLearnDto.UserId,
                     WordId = wordLearnDto.BookId,
                     OriginBook = "CET6",
-                    Status = "learned"
+                    Status = "mastered",
+                    Attempts = userSession.TotalAttempts,
+                    MasteredAt = DateTime.UtcNow
                 };
                 await userWordRepository.AddUserWord(userWord);
+
+                return new WordLearnResultDto { Mastered = true, CurrentStreak = userSession.CorrectStreak };
+            }
+            else
+            {
+                // 正确但未达阈值 → 保留在缓存中
+                await userSessionRepository.UpdateSession(userSession);
+                return new WordLearnResultDto { Mastered = false, CurrentStreak = userSession.CorrectStreak };
             }
         }
         else
         {
-            throw new BizException("词书未启用");
+            // 答错 → 连续正确次数归零，保留在缓存中
+            userSession.CorrectStreak = 0;
+            await userSessionRepository.UpdateSession(userSession);
+            return new WordLearnResultDto { Mastered = false, CurrentStreak = 0 };
         }
-
     }
 
     /**

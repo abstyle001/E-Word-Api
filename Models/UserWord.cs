@@ -15,4 +15,8 @@ public class UserWord
     public long WordId { get; set; }
     public string OriginBook { get; set; }
     public string Status { get; set; }
+    /// <summary>掌握前总答题次数</summary>
+    public int Attempts { get; set; }
+    /// <summary>掌握时间</summary>
+    public DateTime MasteredAt { get; set; }
 }
