@@ -43,4 +43,21 @@ public class UserWordRepository(EWordDbContext db)
         return await db.UserWords
             .CountAsync(uw => uw.UserId == userId && uw.NextReviewAt <= now);
     }
+
+    /// <summary>统计某用户某词书已掌握单词数</summary>
+    public virtual async Task<int> CountMasteredAsync(string userId, string originBook) =>
+        await db.UserWords
+            .CountAsync(uw => uw.UserId == userId
+                && uw.Status == "mastered"
+                && uw.OriginBook == originBook);
+
+    /// <summary>删除用户所有已掌握单词记录（重置学习进度）</summary>
+    public virtual async Task DeleteAllByUserAsync(string userId)
+    {
+        var words = await db.UserWords
+            .Where(uw => uw.UserId == userId)
+            .ToListAsync();
+        db.UserWords.RemoveRange(words);
+        await db.SaveChangesAsync();
+    }
 }

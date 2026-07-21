@@ -46,4 +46,7 @@ public class CET6BookRepository(EWordDbContext db)
     public async Task<CET6Book?> GetWord(long id) =>
         await db.Cet6Books
             .FindAsync(id);
+
+    public async Task<int> CountAsync() =>
+        await db.Cet6Books.CountAsync();
 }

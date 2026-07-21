@@ -4,6 +4,7 @@ using E_Word_Api.Datas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Word_Api.Migrations
 {
     [DbContext(typeof(EWordDbContext))]
-    partial class EWordDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260721061127_UserStats")]
+    partial class UserStats
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,21 +104,21 @@ namespace E_Word_Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dc364c76-e828-4be8-9146-25bb60ea5fce",
+                            Id = "7d414ef2-95d8-42bf-acc9-e056c590c346",
                             AccessFailedCount = 0,
                             City = "北京市",
-                            ConcurrencyStamp = "86d3c4d8-399e-4844-b5f7-fc83d394faa8",
-                            CreatedAt = new DateTime(2026, 7, 21, 6, 37, 49, 677, DateTimeKind.Utc).AddTicks(4980),
+                            ConcurrencyStamp = "3a922393-6d8d-4347-b0df-b6743a8f3b9d",
+                            CreatedAt = new DateTime(2026, 7, 21, 6, 11, 24, 796, DateTimeKind.Utc).AddTicks(2877),
                             Email = "admin@eword.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NickName = "Admin",
                             NormalizedEmail = "ADMIN@EWORD.COM",
                             NormalizedUserName = "ADMIN@EWORD.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMio6sC/yTnj5Lwe269Sil5werED9EsLf3U2BJ2kwbxSojwXFWTHXC9Y7FoXFCu+6A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEC4vIAtVo8gbS0GlAvvxCnEgMf7uVMGIUVhWJ5ADXKTrL4TXIE7r0YFhLSc4Vt6HTw==",
                             PhoneNumber = "17323895436",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7c52c7f7-7f89-4810-8b39-f238acf0125d",
+                            SecurityStamp = "c63b32e2-2b9e-4fc1-bab0-f78c82dbe642",
                             TwoFactorEnabled = false,
                             UserName = "admin@eword.com"
                         });
@@ -233,6 +236,44 @@ namespace E_Word_Api.Migrations
                     b.ToTable("UserSessions");
                 });
 
+            modelBuilder.Entity("E_Word_Api.Models.UserStats", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("CorrectCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastSessionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TotalAnswered")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("WordsMastered")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserStats");
+                });
+
             modelBuilder.Entity("E_Word_Api.Models.UserWord", b =>
                 {
                     b.Property<long>("Id")
@@ -331,13 +372,13 @@ namespace E_Word_Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c763cfd4-15a2-4678-aa11-b15e43d300b6",
+                            Id = "58087e6b-b08f-4fb6-9416-5ed7592ba482",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0092394e-e5ee-4ffd-9531-9fa7dab41200",
+                            Id = "65e5df1d-1f67-46d6-ab0a-1872f7efde07",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -432,8 +473,8 @@ namespace E_Word_Api.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "dc364c76-e828-4be8-9146-25bb60ea5fce",
-                            RoleId = "c763cfd4-15a2-4678-aa11-b15e43d300b6"
+                            UserId = "7d414ef2-95d8-42bf-acc9-e056c590c346",
+                            RoleId = "58087e6b-b08f-4fb6-9416-5ed7592ba482"
                         });
                 });
 
