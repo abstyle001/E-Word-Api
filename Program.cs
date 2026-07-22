@@ -52,8 +52,19 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<WordRepository>();
 builder.Services.AddScoped<CET6BookRepository>();
 builder.Services.AddScoped<ProgressRepository>();
+builder.Services.AddScoped<UserBookRepository>();
+builder.Services.AddScoped<UserSessionRepository>();
+builder.Services.AddScoped<UserWordRepository>();
+builder.Services.AddScoped<CoinRepository>();
 
 var app = builder.Build();
+
+// 自动执行 EF Core 数据库迁移（Docker 启动时）
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<EWordDbContext>();
+    db.Database.Migrate();
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -61,7 +72,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// 容器内只跑 HTTP，HTTPS 重定向由反向代理（Nginx/Ingress）处理
+if (!bool.TryParse(builder.Configuration["DISABLE_HTTPS_REDIRECT"], out var disable) || !disable)
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();

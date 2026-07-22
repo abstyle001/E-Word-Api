@@ -1,5 +1,6 @@
 ﻿using E_Word_Api.Datas;
 using E_Word_Api.Dtos;
+using E_Word_Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_Word_Api.Repositories;
@@ -26,4 +27,26 @@ public class CET6BookRepository(EWordDbContext db)
             })
             .ToListAsync();
     }
+
+    public async Task<List<CET6Book>> SelectNewWords(int number, string userId)
+    {
+        // 找出x个新词
+        return await db.Cet6Books
+            .Where(b => !db.UserWords.Any(uw => uw.UserId == userId && uw.WordId == b.Id))
+            .OrderBy(x => Guid.NewGuid())
+            .Take(number)
+            .ToListAsync();
+    }
+
+    public async Task<List<CET6Book>> GetWordsByIds(List<long> ids) => 
+        await db.Cet6Books
+            .Where(b => ids.Contains(b.Id))
+            .ToListAsync();
+
+    public async Task<CET6Book?> GetWord(long id) =>
+        await db.Cet6Books
+            .FindAsync(id);
+
+    public async Task<int> CountAsync() =>
+        await db.Cet6Books.CountAsync();
 }

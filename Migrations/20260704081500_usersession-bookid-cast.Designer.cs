@@ -4,6 +4,7 @@ using E_Word_Api.Datas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Word_Api.Migrations
 {
     [DbContext(typeof(EWordDbContext))]
-    partial class EWordDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260704081500_usersession-bookid-cast")]
+    partial class usersessionbookidcast
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,21 +104,21 @@ namespace E_Word_Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f83bd62c-bdec-4c30-b584-fbed959befe1",
+                            Id = "829846ff-0e26-4b58-a86b-6353555d6307",
                             AccessFailedCount = 0,
                             City = "北京市",
-                            ConcurrencyStamp = "288b2107-ccff-4f64-b90c-abd30beb54d8",
-                            CreatedAt = new DateTime(2026, 7, 22, 3, 41, 0, 654, DateTimeKind.Utc).AddTicks(6262),
+                            ConcurrencyStamp = "9a957f98-b98a-4152-9adc-0b4ea41e9667",
+                            CreatedAt = new DateTime(2026, 7, 4, 8, 15, 0, 625, DateTimeKind.Utc).AddTicks(4916),
                             Email = "admin@eword.com",
                             EmailConfirmed = false,
                             LockoutEnabled = true,
                             NickName = "Admin",
                             NormalizedEmail = "ADMIN@EWORD.COM",
                             NormalizedUserName = "ADMIN@EWORD.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENEBMLHpLHAAGfUBLVMxavZmldz6DU1GfWLKAFmME65t0pVVUkClGmZ0xycAKNXxmg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAFhZUlYfANGojITF8q8MC8JzeaKmfauORFv1x/yjwck8qluY0IFRC9qSGxa6YYz3Q==",
                             PhoneNumber = "17323895436",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4fc05689-bc7b-4765-8a7d-656b99782c71",
+                            SecurityStamp = "6de06a0e-744d-49fa-ba10-75b8799bd779",
                             TwoFactorEnabled = false,
                             UserName = "admin@eword.com"
                         });
@@ -164,42 +167,6 @@ namespace E_Word_Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CET6Books");
-                });
-
-            modelBuilder.Entity("E_Word_Api.Models.CoinTransaction", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId", "CreatedAt")
-                        .IsDescending(false, true);
-
-                    b.ToTable("CoinTransactions");
                 });
 
             modelBuilder.Entity("E_Word_Api.Models.Progress", b =>
@@ -254,12 +221,6 @@ namespace E_Word_Api.Migrations
                     b.Property<long>("BookId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("CorrectStreak")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalAttempts")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -267,38 +228,6 @@ namespace E_Word_Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserSessions");
-                });
-
-            modelBuilder.Entity("E_Word_Api.Models.UserWallet", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<int>("Balance")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TotalEarned")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("UserWallets");
                 });
 
             modelBuilder.Entity("E_Word_Api.Models.UserWord", b =>
@@ -309,27 +238,9 @@ namespace E_Word_Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("Attempts")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IntervalDays")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("LastReviewedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("MasteredAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("NextReviewAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("OriginBook")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RepetitionCount")
-                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -399,13 +310,13 @@ namespace E_Word_Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dc520bd2-b760-4ff4-a723-c4cdf2e53ca5",
+                            Id = "6e91d299-467a-4ccb-872a-8e1bf298a69b",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "a989a32c-7a16-4fb7-a5d9-5803684ff4d1",
+                            Id = "b94644b7-02a2-4f60-991b-37c1a460a7df",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -500,8 +411,8 @@ namespace E_Word_Api.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "f83bd62c-bdec-4c30-b584-fbed959befe1",
-                            RoleId = "dc520bd2-b760-4ff4-a723-c4cdf2e53ca5"
+                            UserId = "829846ff-0e26-4b58-a86b-6353555d6307",
+                            RoleId = "6e91d299-467a-4ccb-872a-8e1bf298a69b"
                         });
                 });
 
