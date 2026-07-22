@@ -13,7 +13,8 @@ public class WordController(WordRepository wordRepository,
     CET6BookRepository cet6BookRepository,
     UserBookRepository userBookRepository,
     UserSessionRepository userSessionRepository,
-    UserWordRepository userWordRepository) : ControllerBase
+    UserWordRepository userWordRepository,
+    CoinRepository coinRepository) : ControllerBase
 {
     [HttpGet]
     // [Authorize(Roles = RoleType.User)]
@@ -117,7 +118,20 @@ public class WordController(WordRepository wordRepository,
                 };
                 await userWordRepository.AddUserWord(userWord);
 
-                return new WordLearnResultDto { Mastered = true, CurrentStreak = userSession.CorrectStreak };
+                // 掌握新单词奖励 +5 e币
+                var coinReward = 0;
+                try
+                {
+                    await coinRepository.AddCoinsAsync(wordLearnDto.UserId,
+                        CoinRepository.MasterWordReward, "MasterWord", "掌握单词");
+                    coinReward = CoinRepository.MasterWordReward;
+                }
+                catch
+                {
+                    // 加币失败不影响背词流程
+                }
+
+                return new WordLearnResultDto { Mastered = true, CurrentStreak = userSession.CorrectStreak, CoinReward = coinReward };
             }
             else
             {
@@ -200,12 +214,28 @@ public class WordController(WordRepository wordRepository,
 
         await userWordRepository.UpdateUserWord(userWord);
 
+        var coinReward = 0;
+        if (dto.IsCorrect)
+        {
+            try
+            {
+                await coinRepository.AddCoinsAsync(dto.UserId,
+                    CoinRepository.ReviewPassReward, "ReviewPass", "复习通过");
+                coinReward = CoinRepository.ReviewPassReward;
+            }
+            catch
+            {
+                // 加币失败不影响复习流程
+            }
+        }
+
         return new WordReviewResultDto
         {
             Correct = dto.IsCorrect,
             RepetitionCount = userWord.RepetitionCount,
             NextReviewAt = userWord.NextReviewAt.Value,
-            IntervalDays = userWord.IntervalDays
+            IntervalDays = userWord.IntervalDays,
+            CoinReward = coinReward
         };
     }
 

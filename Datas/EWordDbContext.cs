@@ -18,6 +18,10 @@ public class EWordDbContext(DbContextOptions<EWordDbContext> options) : Identity
 
     public DbSet<UserBook> UserBooks { get; set; }
 
+    public DbSet<UserWallet> UserWallets { get; set; }
+
+    public DbSet<CoinTransaction> CoinTransactions { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -71,5 +75,13 @@ public class EWordDbContext(DbContextOptions<EWordDbContext> options) : Identity
             UserId = adminId
         };
         builder.Entity<IdentityUserRole<string>>().HasData(userRole);
+
+        builder.Entity<UserWallet>()
+            .HasIndex(w => w.UserId)
+            .IsUnique();
+
+        builder.Entity<CoinTransaction>()
+            .HasIndex(t => new { t.UserId, t.CreatedAt })
+            .IsDescending(false, true);
     }
 }

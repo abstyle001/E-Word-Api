@@ -13,4 +13,6 @@ public class WordReviewResultDto
     public DateTime NextReviewAt { get; set; }
     /// <summary>当前间隔天数</summary>
     public int IntervalDays { get; set; }
+    /// <summary>本次获得的 e币 奖励（0=无奖励）</summary>
+    public int CoinReward { get; set; }
 }
